@@ -5,9 +5,18 @@
 
 import Foundation
 
-struct Company : MakesMoney  {
+struct Company : Codable, MakesMoney  {
     var name: String
     var type: String
     var employers: Array<Employer>
     var yearlyIncome: Double
+
+    func toString() -> String {
+        """
+        name: \(name)
+        type: \(type)
+        employers \(employers.map { "[\($0.toString())]" })
+        yearlyIncome \(yearlyIncome)
+        """
+    }
 }

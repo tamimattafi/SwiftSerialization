@@ -5,16 +5,13 @@
 
 import Foundation
 
-struct Employer : MakesMoney {
-
+struct Employer : Codable, MakesMoney {
     var name: String
-    var company: Company?
-    var yearlyIncome: Double {
-        get {
-            if company != nil {
-               return company!.yearlyIncome / Double(company!.employers.count)
-            } else { return 0 }
-        } set {}
-    }
+    var position: String
+    var companyName: String
+    var yearlyIncome: Double
 
+    func toString() -> String {
+        "name: \(name), position: \(position), companyName: \(companyName), yearlyIncome: \(yearlyIncome)"
+    }
 }

@@ -8,16 +8,29 @@ import Foundation
 class MainPresenter : MainPresenterProtocol {
 
     private let jsonEncoder: JSONEncoder = JSONEncoder()
+    private let jsonDecoder: JSONDecoder = JSONDecoder()
     private let view: MainViewProtocol
-    private var zennex: Company = Company(name: "Zennex!", type: "IT", employers: [], yearlyIncome: 320000000)
-
-    private lazy var androidDeveloper: Employer = Employer(name: "Jeff", company: zennex)
-    private lazy var iosDeveloper: Employer = Employer(name: "Mark", company: zennex)
-    private lazy var reactNativeDeveloper: Employer = Employer(name: "Carl", company: zennex)
 
     func onViewStarted() {
-        zennex.employers += [androidDeveloper, iosDeveloper, reactNativeDeveloper]
-        view.writeMessage(message: "Serialization of zennex company")
+        let company = prepareCompany()
+        view.writeMessage(message: "Serialization of the company\n")
+        let jsonData = try! jsonEncoder.encode(company)
+        let jsonString = String(data: jsonData, encoding: .utf8)!
+        view.writeMessage(message: jsonString)
+        usleep(1000000)
+        view.writeMessage(message: "\n\nDeserialization of the json to a company object\n")
+        let companyFromJson = try! jsonDecoder.decode(Company.self, from: jsonString.data(using: .utf8)!)
+        view.writeMessage(message: companyFromJson.toString())
+
+    }
+
+    private func prepareCompany() -> Company {
+        let companyName = "Zennex!"
+        return Company(name: companyName, type: "IT", employers: [
+            Employer(name: "Jeff", position: "Android Developer", companyName: companyName, yearlyIncome: 700000),
+            Employer(name: "Mark", position: "iOS Developer", companyName: companyName, yearlyIncome: 700000),
+            Employer(name: "Carl", position: "ReactNative Developer", companyName: companyName, yearlyIncome: 700000)
+        ], yearlyIncome: 320000000)
     }
 
     init(view: MainViewProtocol) {
